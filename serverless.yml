@@ -1,0 +1,75 @@
+service: customer-chatbot
+
+provider:
+  name: aws
+  runtime: python3.11
+  stage: ${opt:stage, 'dev'}
+  region: ap-northeast-2
+  environment:
+    CONVERSATIONS_TABLE: ${self:service}-conversations-${self:provider.stage}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+            - dynamodb:Scan
+            - dynamodb:Query
+          Resource:
+            - !GetAtt ConversationsTable.Arn
+
+functions:
+  chat:
+    handler: backend/handlers/chat.handler
+    events:
+      - http:
+          path: /chat
+          method: post
+          cors: true
+
+  getConversations:
+    handler: backend/handlers/conversations.list_handler
+    events:
+      - http:
+          path: /conversations
+          method: get
+          cors: true
+
+  getConversation:
+    handler: backend/handlers/conversations.get_handler
+    events:
+      - http:
+          path: /conversations/{id}
+          method: get
+          cors: true
+
+  health:
+    handler: backend/handlers/health.handler
+    events:
+      - http:
+          path: /health
+          method: get
+          cors: true
+
+resources:
+  Resources:
+    ConversationsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.CONVERSATIONS_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: conversation_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: conversation_id
+            KeyType: HASH
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: false
