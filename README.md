@@ -133,7 +133,31 @@ npm install
 npm start
 ```
 
-`REACT_APP_API_URL` 환경변수로 백엔드 API URL을 지정할 수 있다. 기본값은 `http://localhost:3000/dev`.
+`frontend/.env` 파일에 `REACT_APP_API_URL`을 설정해 백엔드 API URL을 지정한다.
+
+```bash
+# 실제 AWS 배포 환경
+REACT_APP_API_URL=https://irsd7zj2e2.execute-api.ap-northeast-2.amazonaws.com/dev
+
+# 로컬 테스트 환경 (sls invoke local 사용 시)
+REACT_APP_API_URL=http://localhost:3000/dev
+```
+
+#### 환경변수 우선순위 (높을수록 우선)
+
+| 순위 | 방법 | 설명 |
+| ---- | ---- | ---- |
+| 1 | 셸 환경변수 | `REACT_APP_API_URL=https://... npm start` |
+| 2 | `.env.local` | 로컬 전용, git 무시 |
+| 3 | `.env.development` / `.env.production` | 환경별 파일 |
+| 4 | `.env` | 기본값 |
+
+로컬 테스트 시 셸에서 일시적으로 덮어쓰거나, `.env.local`에 로컬 URL을 설정하면 `.env`를 수정하지 않고 전환할 수 있다.
+
+```bash
+# 셸에서 일시적으로 덮어쓰기
+REACT_APP_API_URL=http://localhost:3000/dev npm start
+```
 
 ### 로컬 Lambda 테스트
 
