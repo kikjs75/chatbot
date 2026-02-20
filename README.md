@@ -152,6 +152,24 @@ sls deploy --stage dev
 
 배포 후 출력되는 API Gateway URL을 프론트엔드의 `REACT_APP_API_URL`에 설정한다.
 
+### 배포 결과 (dev 스테이지)
+
+```
+✔ Service deployed to stack customer-chatbot-dev (179s)
+
+endpoints:
+  POST - https://irsd7zj2e2.execute-api.ap-northeast-2.amazonaws.com/dev/chat
+  GET  - https://irsd7zj2e2.execute-api.ap-northeast-2.amazonaws.com/dev/conversations
+  GET  - https://irsd7zj2e2.execute-api.ap-northeast-2.amazonaws.com/dev/conversations/{id}
+  GET  - https://irsd7zj2e2.execute-api.ap-northeast-2.amazonaws.com/dev/health
+
+functions:
+  chat:             customer-chatbot-dev-chat (29 kB)
+  getConversations: customer-chatbot-dev-getConversations (29 kB)
+  getConversation:  customer-chatbot-dev-getConversation (29 kB)
+  health:           customer-chatbot-dev-health (29 kB)
+```
+
 ## 설계 결정 사항
 
 1. **REST API**: WebSocket 대신 REST를 선택. 포트폴리오 목적으로 이해와 디버깅이 용이함.

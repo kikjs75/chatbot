@@ -2,7 +2,7 @@ service: customer-chatbot
 
 provider:
   name: aws
-  runtime: python3.11
+  runtime: python3.9
   stage: ${opt:stage, 'dev'}
   region: ap-northeast-2
   environment:
@@ -67,9 +67,23 @@ resources:
           - AttributeName: conversation_id
             KeyType: HASH
 
+package:
+  patterns:
+    - '!node_modules/**'
+    - '!frontend/**'
+    - '!tests/**'
+    - '!.git/**'
+    - '!*.md'
+    - '!.serverless/**'
+
 plugins:
   - serverless-python-requirements
 
 custom:
   pythonRequirements:
     dockerizePip: false
+    slim: true
+    noDeploy:
+      - boto3
+      - botocore
+      - pytest
